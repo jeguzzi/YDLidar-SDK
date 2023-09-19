@@ -189,6 +189,12 @@ class YDLIDAR_API CYdLidar {
   //开始OTA升级
   bool ota();
 
+  /**
+   * @brief check LiDAR Scan frequency
+   * @return true if successfully checked, otherwise false.
+   */
+  bool checkScanFrequency();
+
  private:
   /**
    * @brief check LiDAR instance and connect to LiDAR,
@@ -222,12 +228,6 @@ class YDLIDAR_API CYdLidar {
    * @return true if the device information is correct, If it's not
    */
   bool getDeviceInfo();
-
-  /**
-   * @brief check LiDAR Scan frequency
-   * @return true if successfully checked, otherwise false.
-   */
-  bool checkScanFrequency();
 
   /**
    * @brief checkHeartBeat

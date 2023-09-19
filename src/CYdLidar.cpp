@@ -1294,7 +1294,7 @@ bool CYdLidar::calcSampleRate(int count, double scan_time)
     m_PointTime = 1e9 / (m_SampleRate * 1000);
     lidarPtr->setPointTime(m_PointTime);
     if (!m_SingleChannel)
-      m_FixedSize = m_SampleRate * 1000 / (m_ScanFrequency - 0.1);
+      m_FixedSize = m_SampleRate * 1000 / (m_ScanFrequency - 0.0);
     
     if (!isSDMLidar(m_LidarType)) //非SDM雷达才打印Fixed Size
       printf("[YDLIDAR] Fixed Size: %d\n", m_FixedSize);
@@ -1640,7 +1640,7 @@ bool CYdLidar::checkScanFrequency()
   //   }
 
   // m_ScanFrequency -= frequencyOffset;
-  m_FixedSize = m_SampleRate * 1000 / (m_ScanFrequency - 0.1);
+  m_FixedSize = m_SampleRate * 1000 / (m_ScanFrequency - 0.0);
   printf("[YDLIDAR] Current scan frequency: %.02fHz\n", m_ScanFrequency);
   // printf("[YDLIDAR] Fixed size: %d\n", m_FixedSize);
   return true;
@@ -1811,8 +1811,12 @@ bool CYdLidar::checkStatus()
 {
   getDeviceHealth();
 
-  getDeviceInfo();
+  // getDeviceInfo();
 
+  while(!getDeviceInfo()) {
+    sleep(1);
+  }
+  
   return true;
 }
 

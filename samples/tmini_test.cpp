@@ -165,16 +165,16 @@ int main(int argc, char *argv[]) {
 
   float frequency = 10.0;
 
-  // while (ydlidar::os_isOk() && !isSingleChannel) {
-  //   printf("Please enter the lidar scan frequency[5-12]:");
-  //   std::cin >> input_frequency;
-  //   frequency = atof(input_frequency.c_str());
-  //   if (frequency <= 12 && frequency >= 5.0) {
-  //     break;
-  //   }
-  //   fprintf(stderr,
-  //           "Invalid scan frequency,The scanning frequency range is 5 to 12 HZ, Please re-enter.\n");
-  // }
+  while (ydlidar::os_isOk() && !isSingleChannel) {
+    printf("Please enter the lidar scan frequency[5-12]:");
+    std::cin >> input_frequency;
+    frequency = atof(input_frequency.c_str());
+    if (frequency <= 12 && frequency >= 5.0) {
+      break;
+    }
+    fprintf(stderr,
+            "Invalid scan frequency,The scanning frequency range is 5 to 12 HZ, Please re-enter.\n");
+  }
 
   if (!ydlidar::os_isOk()) {
     return 0;
@@ -239,9 +239,9 @@ int main(int argc, char *argv[]) {
   f_optvalue = -180.0f;
   laser.setlidaropt(LidarPropMinAngle, &f_optvalue, sizeof(float));
   /// unit: m
-  f_optvalue = 64.f;
+  f_optvalue = 12.f;
   laser.setlidaropt(LidarPropMaxRange, &f_optvalue, sizeof(float));
-  f_optvalue = 0.05f;
+  f_optvalue = 0.03f;
   laser.setlidaropt(LidarPropMinRange, &f_optvalue, sizeof(float));
   /// unit: Hz
   laser.setlidaropt(LidarPropScanFrequency, &frequency, sizeof(float));
@@ -269,10 +269,17 @@ int main(int argc, char *argv[]) {
   {
       if (laser.doProcessSimple(scan))
       {
-        printf("[%u] points [%.02f(%.02f)]Hz\n",
+        int zeros = 0;
+        for (size_t i = 0; i < scan.points.size(); ++i) {
+          const LaserPoint &p = scan.points.at(i);
+          if (!p.range) {
+            zeros++;
+          }
+        }
+        printf("[%u] points [%.02f(%.02f)]Hz (%d zeros)\n",
                (unsigned int)scan.points.size(),
                scan.scanFreq,
-               1.0 / scan.config.scan_time);
+               1.0 / scan.config.scan_time, zeros);
         // for (size_t i = 0; i < scan.points.size(); ++i)
         // {
         //   const LaserPoint &p = scan.points.at(i);

@@ -1,6 +1,6 @@
 #include <math.h>
 #include "NoiseFilter.h"
-#include "math/angles.h"
+#include "core/math/angles.h"
 
 NoiseFilter::NoiseFilter()
     : minIncline(0.11),
