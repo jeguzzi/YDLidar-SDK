@@ -195,6 +195,23 @@ class YDLIDAR_API CYdLidar {
    */
   bool checkScanFrequency();
 
+  int get_fixed_size() const {
+    return m_FixedSize;
+  }
+
+  void start_record() {
+    if (!fptr) {
+      fptr = fopen("data.csv","w");
+    }
+  }
+
+  void stop_record() {
+    if (fptr) {
+      fclose(fptr);
+      fptr = nullptr;
+    }
+  }
+
  private:
   /**
    * @brief check LiDAR instance and connect to LiDAR,
@@ -309,6 +326,7 @@ class YDLIDAR_API CYdLidar {
    */
   bool isAngleOffsetCorrected() const;
 
+
  private:
   bool    scanning;               ///< LiDAR is Scanning
   int     m_FixedSize;              ///< Fixed LiDAR Points
@@ -366,6 +384,8 @@ class YDLIDAR_API CYdLidar {
   bool m_GlassNoise = false; //玻璃噪点过滤标识
   std::string otaName; //OTA文件路径
   bool otaEncode = true; //OTA是否加密
+
+  FILE *fptr;
 };	// End of class
 #endif // CYDLIDAR_H
 
