@@ -44,7 +44,7 @@ using namespace ydlidar::core::math;
 /*-------------------------------------------------------------
             Constructor
 -------------------------------------------------------------*/
-CYdLidar::CYdLidar() : lidarPtr(nullptr)
+CYdLidar::CYdLidar() : lidarPtr(nullptr), fptr(nullptr)
 {
   m_SerialPort = "/dev/ydlidar";
   m_SerialBaudrate = 230400;
@@ -666,8 +666,11 @@ bool CYdLidar::doProcessSimple(LaserScan &outscan)
     {
       const node_info& node = global_nodes[i];
 
-      // printf("%lu a %.01f r %u\n", 
-      //   i, float(node.angle) / 64.0f, node.dist);
+      if (fptr) fprintf(
+        fptr, "%u,%u,%u,%u,%u,%lu,%u,%u,%d,%d,%d,",
+        node.sync, node.is, node.qual, node.angle, node.dist, node.stamp, 
+        node.delayTime, node.scanFreq, node.debugInfo, node.index, node.error);
+
 
       if (isNetTOFLidar(m_LidarType))
       {
@@ -771,6 +774,8 @@ bool CYdLidar::doProcessSimple(LaserScan &outscan)
         debug.maxIndex = 255;
       }
     } //end for (int i = 0; i < count; i++)
+
+    if (fptr) fprintf(fptr,"\n");
 
     if (m_FixedResolution)
     {
